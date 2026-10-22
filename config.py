@@ -61,3 +61,9 @@ SUMMARY_KEEP_RECENT = 2
 MAX_SUMMARY_CHARS = 200
 # 保险丝：一次提问里最多连续调用几轮工具，防止 Agent 失控刷工具（README 实验 3）
 MAX_TOOL_ROUNDS = 2
+
+# —— RAG 私有文档检索（rag.py 用）——
+EMBEDDING_MODEL = "embedding-3"   # 智谱的嵌入模型（把文字变成向量）
+CHUNK_SIZE = 300                  # 切块目标字数
+TOP_K = 3                         # 检索时捞最相关的几段
+RAG_MIN_SCORE = 0.3               # 相似度低于它视为"没找到"（经验值：实测无关问题也能得 0.25 左右）

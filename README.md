@@ -43,10 +43,10 @@ agent/
 ├── config.py    ← 最底层：client、模型名、所有可调常量（谁都能依赖它，它不依赖谁）
 ├── tools.py     ← 工具层：工具函数 + TOOLBOX + TOOL_SCHEMAS
 ├── memory.py    ← 记忆层：滑动窗口、摘要压缩、防雪球
-├── rag.py       ← 知识层：私有文档检索（RAG，待建）
+├── rag.py       ← 知识层：私有文档检索（RAG）
 ├── agent.py     ← 对话循环 + 入口（agent_loop + main）
 ├── docs/        ← 练习任务书、学习笔记
-├── knowledge/   ← RAG 检索的文档库（待建）
+├── knowledge/   ← RAG 检索的文档库（把你自己的笔记放这）
 ├── README.md / requirements.txt / .gitignore
 ```
 
@@ -63,6 +63,7 @@ agent/
 - **异常兜底**：单轮失败（网络/接口/参数）只作废本轮，程序不崩
 - **token 监控**：每次调用打印 `[Token] 输入+输出=总计`
 - **调试命令**：`/dump` 查看长期记忆、`/forget` 一键清空、`q` 退出
+- **RAG 私有文档检索**：`knowledge/` 里的笔记切块、嵌入，提问时按语义搜索最相关的几段原文给 LLM 当参考资料
 
 ## 怎么运行
 
@@ -95,6 +96,8 @@ $env:LLM_MODEL    = "glm-5.3-flash"
 | `SUMMARY_KEEP_RECENT` | 压缩后保留最近几条原文 | `2`（日常建议 10） |
 | `MAX_SUMMARY_CHARS` | 摘要字数上限，超过就"摘要的摘要" | `200` |
 | `MAX_TOOL_ROUNDS` | 保险丝：单次提问最多几轮工具调用 | `2`（日常建议 8） |
+| `EMBEDDING_MODEL` | 嵌入模型（把文字变成向量） | `embedding-3` |
+| `CHUNK_SIZE` / `TOP_K` / `RAG_MIN_SCORE` | 切块字数 / 检索捞几段 / 相似度及格线 | `300` / `3` / `0.3` |
 
 ## 学习实验
 
@@ -122,5 +125,5 @@ git log --oneline     # 看历史；改崩了用 git diff / git checkout -- 文�
 - [x] 上下文长度管理（滑动窗口、自动摘要、防雪球）
 - [x] 流式输出、保险丝、异常兜底
 - [x] 多文件拆分 + git 版本控制
-- [ ] **RAG：私有文档检索（下一站）**
-- [ ] 结构化输出 / MCP / 多 Agent 协作
+- [x] RAG：私有文档检索（切块 / 嵌入 / 余弦检索，注册为 `search_documents` 工具）
+- [ ] 结构化输出 / MCP / 多 Agent 协作（下一站）

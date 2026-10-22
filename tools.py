@@ -10,6 +10,8 @@ tools.py —— 工具层：普通的 Python 函数 + 给 LLM 看的"说明书"�
 import os
 from datetime import datetime
 
+from rag import search_documents
+
 
 def get_current_time() -> str:
     """获取当前的日期和时间"""
@@ -61,6 +63,7 @@ TOOLBOX = {
     "list_files": list_files,
     "read_file": read_file,
     "get_weather": get_weather,
+    "search_documents": search_documents,
 }
 
 # 工具说明书：用 JSON Schema 描述每个函数的名字、用途、参数。
@@ -128,6 +131,22 @@ TOOL_SCHEMAS = [
                     "city": {"type": "string", "description": "城市名称，例如北京"}
                 },
                 "required": ["city"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "search_documents",
+            "description": "在用户的私有文档/笔记（knowledge 文件夹）里检索相关内容。"
+                           "当用户问到自己的笔记、文档、计划里记了什么，"
+                           "或问题可能记录在私有文档中时使用。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {"type": "string", "description": "要检索的主题或问题关键词"}
+                },
+                "required": ["query"],
             },
         },
     }
